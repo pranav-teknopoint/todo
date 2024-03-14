@@ -59,5 +59,5 @@ function undo() {
   });
   setTimeout(() => {
     undobutton.classList.remove("show");
-  }, 5000);
+  }, 3000);
 }
