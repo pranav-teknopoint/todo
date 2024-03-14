@@ -105,3 +105,24 @@ input[type="submit"] {
 .button:hover {
   scale: 1.1;
 }
+
+@media screen and (max-width: 767px) {
+  .container {
+    width: 100%;
+  }
+
+  .note {
+    flex-direction: column;
+  }
+
+  .content-wrapper {
+    display: grid;
+    gap: 20px;
+    margin-top: 50px;
+    grid-template-columns: repeat(1, auto);
+  }
+
+  .button:hover {
+    scale: unset;
+  }
+}
