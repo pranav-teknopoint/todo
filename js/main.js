@@ -44,6 +44,20 @@ function save(idnumber) {
 
 function Delete(id) {
   idnumber = id.split("delete").join("");
-  data = "data" + idnumber;
+  var data = "data" + idnumber;
+  deletedata = document.getElementById(data);
   document.getElementById(data).remove();
+  undo();
+}
+
+function undo() {
+  undobutton = document.querySelector(".undo");
+  undobutton.classList.add("show");
+  undobutton.addEventListener("click", function () {
+    document.querySelector(".content-wrapper").appendChild(deletedata);
+    undobutton.classList.remove("show");
+  });
+  setTimeout(() => {
+    undobutton.classList.remove("show");
+  }, 5000);
 }
