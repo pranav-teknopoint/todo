@@ -4,6 +4,11 @@ document.getElementById("add").addEventListener("click", function () {
   data = input.value;
   if (data) {
     addnote(data);
+  } else {
+    document.getElementById("tooltip").classList.add("show");
+    setTimeout(() => {
+      document.getElementById("tooltip").classList.remove("show");
+    }, 2000);
   }
 });
 
@@ -12,6 +17,11 @@ document.getElementById("note").addEventListener("keydown", function (e) {
   if (e.key == "Enter") {
     if (data) {
       addnote(data);
+    } else {
+      document.getElementById("tooltip").classList.add("show");
+      setTimeout(() => {
+        document.getElementById("tooltip").classList.remove("show");
+      }, 2000);
     }
   }
 });
