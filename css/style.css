@@ -37,7 +37,6 @@ body {
   gap: 10px;
   justify-content: center;
   margin-top: 50px;
-  background: rgba(255, 255, 255, 0.7);
 }
 
 .noteadder {
@@ -54,6 +53,7 @@ body {
   outline: none;
   border-radius: 5px;
   border: 2px grey solid;
+  background: rgba(255, 255, 255, 0.7);
 }
 
 .tooltip {
