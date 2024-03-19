@@ -1,89 +1,98 @@
-let i = 0;
-let input = document.getElementById("note");
-document.getElementById("add").addEventListener("click", function () {
-  data = input.value;
+let noteIndex = 0;
+
+const input = document.getElementById("note");
+const addButton = document.getElementById("add");
+const tooltip = document.getElementById("tooltip");
+const contentWrapper = document.querySelector(".content-wrapper");
+const undoButton = document.querySelector(".undo");
+
+addButton.addEventListener("click", addNote);
+input.addEventListener("keydown", handleEnter);
+
+function addNote() {
+  const data = input.value.trim();
   if (data) {
-    addnote(data);
+    createNoteElement(data);
   } else {
-    document.getElementById("tooltip").classList.add("show");
-    setTimeout(() => {
-      document.getElementById("tooltip").classList.remove("show");
-    }, 2000);
+    displayTooltip();
   }
-});
+}
 
-document.getElementById("note").addEventListener("keydown", function (e) {
-  data = input.value;
-  if (e.key == "Enter") {
-    if (data) {
-      addnote(data);
-    } else {
-      document.getElementById("tooltip").classList.add("show");
-      setTimeout(() => {
-        document.getElementById("tooltip").classList.remove("show");
-      }, 2000);
-    }
+function handleEnter(e) {
+  if (e.key === "Enter") {
+    addNote();
   }
-});
+}
 
-function addnote(value) {
-  document.querySelector(
-    ".content-wrapper"
-  ).innerHTML += `<div class="content" id = "${"data" + i}">
-          <div class="display" id='${i}'><p>${value}</p></div>
-          <div class="operations">
-            <div class="button" id='${"edit" + i}' onclick="edit(id)">Edit</div>
-            <div class="button" id=${
-              "delete" + i
-            } onclick="Delete(id)">Delete</div>
-          </div>
-        </div>`;
-  i++;
+function createNoteElement(value) {
+  const noteId = `note${noteIndex}`;
+  contentWrapper.innerHTML += `
+    <div class="content" id="${noteId}">
+      <div class="display" id="${noteIndex}">
+        <p>${value}</p>
+      </div>
+      <div class="operations">
+        <div class="button" id="edit${noteIndex}" onclick="edit(${noteIndex})">Edit</div>
+        <div class="button" id="delete${noteIndex}" onclick="deleteNote(${noteIndex})">Delete</div>
+      </div>
+    </div>`;
+  noteIndex++;
   input.value = "";
 }
 
 function edit(id) {
-  data = document.getElementById(id);
-  idnumber = id.split("edit").join("");
-  data.innerHTML = "Save";
-  data.setAttribute("onclick", `save(${idnumber})`);
-  value = document.getElementById(idnumber).querySelector("p").innerHTML;
-  document.getElementById(
-    idnumber
-  ).innerHTML = `<input class="editor" type="text" name="newdata" id='${
-    "new" + idnumber
-  }' value = '${value}' onkeydown="if (event.keyCode == 13)
-  data.click()"></input>`;
+  const editButton = document.getElementById(`edit${id}`);
+  const noteContent = document.getElementById(id).querySelector("p");
+  const value = noteContent.innerHTML;
+
+  noteContent.innerHTML =
+    "<input class='editor' type='text' name='newdata' id='new" +
+    id +
+    "' value='" +
+    value +
+    "' onkeydown='if(event.keyCode == 13) save(" +
+    id +
+    ")'>";
+  editButton.innerHTML = "Save";
+  editButton.setAttribute("onclick", `save(${id})`);
 }
 
-function save(idnumber) {
-  data = document.getElementById("edit" + idnumber);
-  newvalue = document.getElementById("new" + idnumber).value;
-  if (newvalue) {
-    document.getElementById(idnumber).innerHTML = `<p>${newvalue}</p>`;
+function save(id) {
+  const editButton = document.getElementById(`edit${id}`);
+  const newValue = document.getElementById(`new${id}`).value.trim();
+  const noteContent = document.getElementById(id).querySelector("p");
+
+  if (newValue) {
+    noteContent.textContent = newValue;
   } else if (confirm("Empty note will be deleted!")) {
-    Delete("delete" + idnumber);
+    deleteNote(id);
   }
-  data.innerHTML = "Edit";
-  data.setAttribute("onclick", `edit("edit${idnumber}")`);
+
+  editButton.innerHTML = "Edit";
+  editButton.setAttribute("onclick", `edit(${id})`);
 }
 
-function Delete(id) {
-  idnumber = id.split("delete").join("");
-  var data = "data" + idnumber;
-  deletedata = document.getElementById(data);
-  document.getElementById(data).remove();
-  undo();
+function deleteNote(id) {
+  const noteElement = document.getElementById(`note${id}`);
+  noteElement.remove();
+  showUndoButton(noteElement);
 }
 
-function undo() {
-  undobutton = document.querySelector(".undo");
-  undobutton.classList.add("show");
-  undobutton.addEventListener("click", function () {
-    document.querySelector(".content-wrapper").appendChild(deletedata);
-    undobutton.classList.remove("show");
-  });
+function showUndoButton(deletedElement) {
+  undoButton.classList.add("show");
   setTimeout(() => {
-    undobutton.classList.remove("show");
+    undoButton.classList.remove("show");
   }, 3000);
+
+  undoButton.onclick = () => {
+    contentWrapper.appendChild(deletedElement);
+    undoButton.classList.remove("show");
+  };
+}
+
+function displayTooltip() {
+  tooltip.classList.add("show");
+  setTimeout(() => {
+    tooltip.classList.remove("show");
+  }, 2000);
 }
